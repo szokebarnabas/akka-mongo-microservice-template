@@ -1,3 +1,5 @@
+lazy val root = (project in file(".")).enablePlugins(JavaAppPackaging)
+
 name := "microservice"
 organization := "com.nextperience"
 version := "1.0"
@@ -7,11 +9,7 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 resolvers += Resolver.bintrayRepo("hseeberger", "maven")
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-enablePlugins(JavaAppPackaging)
-enablePlugins(DockerPlugin)
-
 packageName in Docker := "advert-service"
-dockerBaseImage := "java:8"
 dockerExposedPorts := Seq(8080)
 
 libraryDependencies ++= {
@@ -41,6 +39,9 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-testkit" % akkaV,
     "org.scalatest" %% "scalatest" % scalaTestV % "test"
   )
+}
+unmanagedResourceDirectories in Compile += {
+  baseDirectory.value / "src/main/resources"
 }
 
 Revolver.settings

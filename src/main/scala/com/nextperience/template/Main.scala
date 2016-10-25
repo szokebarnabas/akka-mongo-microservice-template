@@ -4,11 +4,13 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
+import com.nextperience.template.config.Config
 import com.nextperience.template.http.HttpService
 import org.slf4j.LoggerFactory
+
 import scala.concurrent.duration._
 
-object Main extends App {
+object Main extends App with Config {
 
   val logger = LoggerFactory.getLogger(Main.getClass)
 
@@ -19,7 +21,7 @@ object Main extends App {
 
   val httpService = new HttpService
 
-  Http().bindAndHandle(httpService.routes, "localhost", 8080)
+  Http().bindAndHandle(httpService.routes, httpInterface, httpPort)
 
   logger.info("Application has been started.")
 }
