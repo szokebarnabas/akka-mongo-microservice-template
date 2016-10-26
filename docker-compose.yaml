@@ -1,0 +1,11 @@
+advert:
+  image: advert-service:1.0
+  ports:
+    - "8080:8080"
+  links:
+    - mongo:mongo
+
+mongo:
+  image: daocloud.io/library/mongo:latest
+  ports:
+    - "27017:27017"
