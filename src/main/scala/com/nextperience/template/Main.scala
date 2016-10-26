@@ -21,7 +21,8 @@ object Main extends App with Config {
 
   val httpService = new HttpService
 
+  logger.info("Application has been started.")
+
   Http().bindAndHandle(httpService.routes, httpInterface, httpPort)
 
-  logger.info("Application has been started.")
 }

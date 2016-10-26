@@ -2,6 +2,7 @@ package com.nextperience.template.persistence
 
 import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.commons.MongoDBObject
+import com.nextperience.template.config.Config
 import com.nextperience.template.model.Advert
 import salat.dao.SalatDAO
 import salat.global._
@@ -39,7 +40,7 @@ class MongoAdvertRepository(advertDao: SalatDAO[Advert, String]) extends AdvertR
   override def findAll: List[Advert] = advertDao.find(ref = MongoDBObject.empty).toList
 }
 
-object MongoAdvertRepository {
-  val advertDao = new SalatDAO[Advert, String](collection = MongoClient()("advertdb")("adverts")) {}
+object MongoAdvertRepository extends Config {
+  val advertDao = new SalatDAO[Advert, String](collection = MongoClient(host = mongoHost , port = mongoPort)(database)("adverts")) {}
   def apply(): MongoAdvertRepository = new MongoAdvertRepository(advertDao)
 }
