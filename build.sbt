@@ -37,7 +37,11 @@ libraryDependencies ++= {
 
     // Testing
     "com.typesafe.akka" %% "akka-http-testkit" % akkaV,
-    "org.scalatest" %% "scalatest" % scalaTestV % "test"
+    "org.scalatest" %% "scalatest" % scalaTestV % "test",
+
+    "ch.qos.logback" % "logback-classic" % "1.1.3",
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
+    "net.logstash.logback" % "logstash-logback-encoder" % "4.7"
   )
 }
 unmanagedResourceDirectories in Compile += {

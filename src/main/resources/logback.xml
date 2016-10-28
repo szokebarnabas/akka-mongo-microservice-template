@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <timestamp key="byDay" datePattern="yyyyMMdd'T'HHmmss"/>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
@@ -8,12 +10,29 @@
         </encoder>
     </appender>
 
-    <logger name="akka" level="INFO" />
-    <logger name="spray" level="INFO" />
+    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>192.168.99.100:4560</destination>
 
-    <logger name="" level="INFO" />
+        <!-- encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
 
-    <root level="INFO">
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>log-${byDay}.txt</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="akka" level="INFO"/>
+    <logger name="spray" level="INFO"/>
+
+    <logger name="" level="INFO"/>
+
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="stash" />
     </root>
 </configuration>
