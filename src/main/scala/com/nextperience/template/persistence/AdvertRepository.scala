@@ -4,6 +4,7 @@ import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.commons.MongoDBObject
 import com.nextperience.template.config.Config
 import com.nextperience.template.model.Advert
+import org.slf4j.LoggerFactory
 import salat.dao.SalatDAO
 import salat.global._
 
@@ -41,6 +42,8 @@ class MongoAdvertRepository(advertDao: SalatDAO[Advert, String]) extends AdvertR
 }
 
 object MongoAdvertRepository extends Config {
+  val logger = LoggerFactory.getLogger(getClass)
+  logger.info("Connecting to advert db... Host: {}, Port: {} Database: {}", mongoHost, mongoPort.toString, database)
   val advertDao = new SalatDAO[Advert, String](collection = MongoClient(host = mongoHost , port = mongoPort)(database)("adverts")) {}
   def apply(): MongoAdvertRepository = new MongoAdvertRepository(advertDao)
 }

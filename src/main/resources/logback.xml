@@ -5,33 +5,51 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
-            <!--<pattern>%date{MM/dd HH:mm:ss} %-6level[%logger{0}]: %msg%n</pattern>-->
-            <pattern>%-6level[%logger{0}]: %msg%n</pattern>
+            <pattern>%date{HH:mm:ss.SSS} %-6level[%logger{0}]: %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>192.168.99.100:5000</destination>
-
-        <!-- encoder is required -->
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
-
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>log-${byDay}.txt</file>
+        <file>logs/log-${byDay}.txt</file>
         <append>true</append>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%-5level] %msg%n</pattern>        </encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <remoteHost>192.168.99.100</remoteHost>
+        <port>5000</port>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <mdc/>
+                <context/>
+                <version/>
+                <logLevel/>
+                <pattern>
+                    <pattern>
+                        {
+                        "appName": "advert-service",
+                        "appVersion": "1.0"
+                        }
+                    </pattern>
+                </pattern>
+                <threadName/>
+                <message/>
+                <logstashMarkers/>
+                <arguments/>
+                <stackTrace/>
+            </providers>
+        </encoder>
     </appender>
 
     <logger name="akka" level="INFO"/>
     <logger name="spray" level="INFO"/>
 
-    <logger name="" level="INFO"/>
-
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
-        <appender-ref ref="stash" />
+        <appender-ref ref="STASH"/>
     </root>
 </configuration>
