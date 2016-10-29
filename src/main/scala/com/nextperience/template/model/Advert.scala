@@ -1,7 +1,10 @@
 package com.nextperience.template.model
 
-import org.bson.types.ObjectId
-import salat.annotations._
+import reactivemongo.bson.Macros
+import reactivemongo.bson._
 
-case class Advert(@Key("_id") id: String = new ObjectId().toString, title: String, description: String, salary: Int, jobType: String, owner: String)
+case class Advert(_id: BSONObjectID = BSONObjectID.generate(), title: String, description: String, salary: Int, jobType: String, owner: String)
 
+object Advert {
+  implicit val advertHandler = Macros.handler[Advert]
+}

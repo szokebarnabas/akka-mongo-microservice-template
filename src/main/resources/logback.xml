@@ -46,6 +46,7 @@
 
     <logger name="akka" level="INFO"/>
     <logger name="spray" level="INFO"/>
+    <logger name="reactivemongo" level="WARN" />
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>

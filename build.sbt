@@ -31,16 +31,16 @@ libraryDependencies ++= {
     "org.json4s" %% "json4s-jackson" % json4sJacksonV,
     "org.json4s" % "json4s-ext_2.11" % json4sJacksonV,
 
-    // MongoDB
-    "org.mongodb" % "casbah-core_2.11" % casbahV,
-    "com.github.salat" %% "salat" % salatV,
-
     // Testing
     "com.typesafe.akka" %% "akka-http-testkit" % akkaV,
     "org.scalatest" %% "scalatest" % scalaTestV % "test",
 
     "ch.qos.logback" %  "logback-classic" % "1.1.7",
-    "net.logstash.logback" % "logstash-logback-encoder" % "4.7"
+    "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
+
+    // Reactive mongo
+    "org.reactivemongo" %% "reactivemongo" % "0.12.0",
+    "org.reactivemongo" % "reactivemongo-extensions-bson_2.11" % "0.11.7.play24"
   )
 }
 unmanagedResourceDirectories in Compile += {

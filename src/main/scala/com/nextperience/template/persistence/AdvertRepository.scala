@@ -1,49 +1,45 @@
 package com.nextperience.template.persistence
 
-import com.mongodb.casbah.MongoClient
-import com.mongodb.casbah.commons.MongoDBObject
 import com.nextperience.template.config.Config
 import com.nextperience.template.model.Advert
 import org.slf4j.LoggerFactory
-import salat.dao.SalatDAO
-import salat.global._
+import reactivemongo.api.{DB, MongoDriver}
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
+import reactivemongo.extensions.dao.BsonDao
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait AdvertRepository {
-  
-  def findByTitle(title: String): List[Advert]
+
+  def findByTitle(title: String): Future[List[Advert]]
 
   def save(advert: Advert)
 
   def update(advert: Advert)
 
-  def findById(id: String) : Option[Advert]
+  def findById(id: String) : Future[Option[Advert]]
 
-  def findAll : List[Advert]
+  def findAll : Future[List[Advert]]
 }
 
-class MongoAdvertRepository(advertDao: SalatDAO[Advert, String]) extends AdvertRepository {
+class MongoAdvertRepository(db : DB) extends BsonDao[Advert, BSONObjectID](db = db, collectionName = "adverts") with AdvertRepository {
 
-  override def findByTitle(title: String) = {
-    advertDao.find(ref = MongoDBObject("title" -> MongoDBObject("$eq" -> title)))
-      .sort(orderBy = MongoDBObject("_id" -> -1))
-      .toList
-  }
+  override def findByTitle(title: String): Future[List[Advert]] = super.findAll(selector = BSONDocument("title" -> BSONDocument("$eq" -> title)))
 
-  override def save(advert: Advert) = advertDao.save(advert)
+  override def update(advert: Advert): Unit = super.update(selector = BSONDocument("_id" -> BSONDocument("$eq" -> advert._id)), update = advert)
 
-  override def update(advert: Advert) = {
-    val query = MongoDBObject("_id" -> advert.id)
-    advertDao.update(q = query, advertDao._grater.asDBObject(advert))
-  }
+  override def findById(id: String): Future[Option[Advert]] = super.findById(BSONObjectID.parse(id).get)
 
-  override def findById(id: String): Option[Advert] = advertDao.findOneById(id)
+  override def findAll: Future[List[Advert]] = super.findAll()
 
-  override def findAll: List[Advert] = advertDao.find(ref = MongoDBObject.empty).toList
+  override def save(advert: Advert): Unit = super.insert(advert)
 }
 
 object MongoAdvertRepository extends Config {
   val logger = LoggerFactory.getLogger(getClass)
   logger.info("Connecting to advert db... Host: {}, Port: {} Database: {}", mongoHost, mongoPort.toString, database)
-  val advertDao = new SalatDAO[Advert, String](collection = MongoClient(host = mongoHost , port = mongoPort)(database)("adverts")) {}
-  def apply(): MongoAdvertRepository = new MongoAdvertRepository(advertDao)
+  val driver = new MongoDriver
+  val connection = driver.connection(nodes = List(s"$mongoHost:$mongoPort"))
+  val db: DB = connection(name = database)
+  def apply(): MongoAdvertRepository = new MongoAdvertRepository(db)
 }
