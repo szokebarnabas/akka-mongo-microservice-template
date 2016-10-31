@@ -32,7 +32,7 @@ libraryDependencies ++= {
     "org.json4s" % "json4s-ext_2.11" % json4sJacksonV,
 
     // Testing
-    "com.typesafe.akka" %% "akka-http-testkit" % akkaV,
+    "com.typesafe.akka" %% "akka-http-testkit" % akkaV % "test",
     "org.scalatest" %% "scalatest" % scalaTestV % "test",
 
     "ch.qos.logback" %  "logback-classic" % "1.1.7",
@@ -40,7 +40,12 @@ libraryDependencies ++= {
 
     // Reactive mongo
     "org.reactivemongo" %% "reactivemongo" % "0.12.0",
-    "org.reactivemongo" % "reactivemongo-extensions-bson_2.11" % "0.11.7.play24"
+    "org.reactivemongo" % "reactivemongo-extensions-bson_2.11" % "0.11.7.play24",
+
+    // Embedded mongo
+    "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.5" % "test",
+    "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test"
+
   )
 }
 unmanagedResourceDirectories in Compile += {
